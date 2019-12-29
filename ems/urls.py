@@ -15,9 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path , include
-
+from employee.views import user_login, user_success, user_logout
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('poll/', include('poll.urls')),
     path('employee/',include('employee.urls')),
+    path('login/', user_login, name = 'user_login'),
+    path('success/', user_success, name = 'user_success'),
+    path('logout/', user_logout, name = 'user_logout'),
 ]

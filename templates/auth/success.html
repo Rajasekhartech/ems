@@ -1,0 +1,9 @@
+{% extends 'polls/base.html' %}
+
+{% block content %}
+    <p> User <b> {{user.first_name }} </b>is loged in successfully</p>
+    <form method="POST" action="/logout/">
+    {%csrf_token%}
+    <input type="submit" value="logout">
+    </form>
+{% endblock content %}

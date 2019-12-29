@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 # Create your models here.
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete="models.CASCADE")
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     designation = models.CharField(max_length= 20 , null= False , blank= False)
     salary = models.IntegerField(null=True, blank=True)
     class Meta:
