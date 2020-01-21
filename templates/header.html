@@ -8,6 +8,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'employee_list'%}">
                     Employee
+                    <span class="badge badge-primary badge-pill ">{{emp_count}}</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -20,8 +21,10 @@
     </div>
     {% if user.is_authenticated %}
         <div class="text-right">
+
             <form method="POST" action="/logout/">
             {%csrf_token%}
+            <a href="#">{{request.role}}</a>
             <input type="submit" class="btn btn-danger" value="logout">
             </form>
         </div>

@@ -5,7 +5,7 @@
 <br>
     <form method="POST">
         {% csrf_token %}
-        <table>
+        <table class="table table-bordered" >
             {{user_form.as_table}}
         </table>
         <br>

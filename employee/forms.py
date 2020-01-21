@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User, Group
 
 class UserForm(forms.ModelForm):
@@ -25,11 +26,11 @@ class UserForm(forms.ModelForm):
         forms.ModelForm.__init__(self, *args, **kwargs)
 
 
-        def save(self):
-            password = self.cleaned_data.pop('password')
-            role = self.cleaned_data.pop('role')
-            u = super().save()
-            u.groups.set([role])
-            u.set_password(password)
-            u.save()
-            return u
+    def save(self):
+       password = self.cleaned_data.pop('password')
+       role = self.cleaned_data.pop('role')
+       u = super().save()
+       u.groups.set([role])
+       u.set_password(password)
+       u.save()
+       return u

@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'employee.middlewares.RoleMiddleware',
+
 ]
 
 ROOT_URLCONF = 'ems.urls'
@@ -67,6 +68,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'poll.context_processor.poll_count',
+                'poll.context_processor.emp_count',
             ],
         },
     },
@@ -128,3 +130,4 @@ STATICFILES_DIRS =[
     STATIC_DIR,
 
 ]
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'

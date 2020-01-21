@@ -1,10 +1,13 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404 , redirect
 from django.contrib.auth.models import User
 from employee.forms import UserForm
 from django.contrib.auth import authenticate, logout,login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
+from django.contrib.sessions.models import Session
+
+
 # Create your views here.
 
 def user_login(request):
@@ -16,8 +19,11 @@ def user_login(request):
         if user:
             login(request, user)
             if request.GET.get('next', None):
+                request.session['id'] = user.id
                 return HttpResponseRedirect(request.GET['next'])
             return HttpResponseRedirect(reverse('employee_list'))
+
+
         else:
             context['error'] = "Provide valid credentials !!!"
             return render(request, "auth/login.html", context)
@@ -30,7 +36,7 @@ def user_success(request):
     context['user'] = request.user
     return render(request, "auth/success.html", context)
 
-@login_required(login_url= '/login/')
+#@login_required(login_url= '/login/')
 def user_logout(request):
     if request.method=="POST":
         logout(request)
@@ -38,11 +44,11 @@ def user_logout(request):
 
 @login_required(login_url= '/login/')
 def employee_list(request):
-    print(request.role)
     context = {}
     context['users'] = User.objects.all()
     context['title'] = 'Employees'
     return render(request, 'employee/index.html',context)
+
 
 @login_required(login_url= '/login/')
 def employee_details(request, id = None):
