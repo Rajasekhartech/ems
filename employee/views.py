@@ -4,11 +4,14 @@ from employee.forms import UserForm
 from django.contrib.auth import authenticate, logout,login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.sessions.models import Session
-
-
+from ems.decorators import admin_hr_required
+from django.views.generic import DeleteView
+from django.views.generic.edit import UpdateView
 # Create your views here.
+def home(request):
+    return render(request, 'home.html')
 
 def user_login(request):
     context = {}
@@ -57,6 +60,7 @@ def employee_details(request, id = None):
     return render(request,'employee/details.html',context)
 
 @login_required(login_url= '/login/')
+@admin_hr_required
 def employee_add(request):
     context = {}
     if request.method == "POST":
@@ -100,3 +104,16 @@ def employee_delete(request , id = None):
         context['user'] = user
         return render(request, 'employee/delete.html', context)
 
+class ProfileUpdate(UpdateView):
+    fields = ['designation', 'salary']
+    template_name = 'auth/profile_update.html'
+    success_url = reverse_lazy('my_profile')
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+
+class MyProfile(DeleteView):
+    template_name = 'auth/profile.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile

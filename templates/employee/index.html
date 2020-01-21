@@ -1,5 +1,5 @@
 {% extends 'polls/base.html' %}
-
+{% load poll_extras %}
 {% block content %}
 <div class="row">
         <div class="col-sm-8">
@@ -39,9 +39,39 @@
 
         {% else %}
             <p> There are no employees</p>
-    {% endif %}
+        {% endif %}
+    </div>
+    </div>
+    <div class="col-sm-4">
+        {% recent_polls as questions %}
+        <p>
+            <h3>Recent Polls</h3>
+        </p>
 
-        </div>
+        <div class="table-responsive-sm">
+            {% if questions %}
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Poll</th>
+                        </tr>
+                </thead>
+                <tbody>
+                {% for question in questions %}
+                    <tr>
+                        <th scope="row">
+                            <a class="list-group-item" href="{% url 'polls_details' question.id%}" >{{question.title }} </a>
+                        </th>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+        {% else %}
+            <p>There is no question available.</p>
+        {% endif %}
+
     </div>
 </div>
+
 {% endblock content %}

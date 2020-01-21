@@ -1,8 +1,9 @@
 {% extends 'polls/base.html' %}
 
 {% block content %}
-<h2> Vote page</h2>
+<p>
 <h3>{{question.title }}</h3>
+</p>
 <form method="POST" action="/poll/{{question.id}}/">
     {% csrf_token %}
 {% for choice in question.choices %}
