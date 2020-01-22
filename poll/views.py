@@ -84,7 +84,7 @@ class PollView(View):
                 new_choice = cf.save(commit=False)
                 new_choice.question = new_poll
                 new_choice.save()
-            return HttpResponseRedirect('/poll/list/')
+            return HttpResponseRedirect('/poll')
         context = {'poll_form': poll_form, 'choice_forms': choice_forms}
         return render(request, 'polls/new_poll.html', context)
 
