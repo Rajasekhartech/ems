@@ -109,6 +109,7 @@ class PollView(View):
 
     @method_decorator(decorators)
     def delete(self, request, id=None):
-        question = get_object_or_404(Question)
+        question = get_object_or_404(Question, id = id)
+        print(question)
         question.delete()
         return redirect('polls_list')

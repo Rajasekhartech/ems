@@ -9,7 +9,14 @@ from django.contrib.sessions.models import Session
 from ems.decorators import admin_hr_required
 from django.views.generic import DeleteView
 from django.views.generic.edit import UpdateView
+
+from rest_framework import viewsets
 # Create your views here.
+
+class EmployeeViewSet(viewsets.ModelViewSet):
+    pass
+
+
 def home(request):
     return render(request, 'home.html')
 
