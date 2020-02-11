@@ -20,6 +20,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('poll/', include('poll.urls')),
     path('employee/',include('employee.urls')),
+    path('api/v1/',include("poll.api_urls")),
+
     path('login/', user_login, name = 'user_login'),
     path('success/', user_success, name = 'user_success'),
     path('logout/', user_logout, name = 'user_logout'),

@@ -7,7 +7,14 @@ from ems.decorators import admin_hr_required
 from django.views.generic import View
 from django.utils.decorators import method_decorator
 from poll.forms import PollForm, ChoiceForm
+from poll.serializers import QuestionSerializer
 # Create your views here.
+
+def Poll(request):
+    if request.method == "GET":
+        questions = Question.objects.all()
+        serializer = QuestionSerializer(questions, many= True)
+        return JsonResponse(serializer.data, safe= False)
 
 @login_required(login_url= '/login/')
 def index(request):
