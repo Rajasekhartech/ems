@@ -6,15 +6,50 @@ from  django.contrib.auth.decorators import login_required
 from ems.decorators import admin_hr_required
 from django.views.generic import View
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from poll.forms import PollForm, ChoiceForm
 from poll.serializers import QuestionSerializer
+
+from rest_framework.parsers import JSONParser
 # Create your views here.
 
+@csrf_exempt
 def Poll(request):
     if request.method == "GET":
         questions = Question.objects.all()
         serializer = QuestionSerializer(questions, many= True)
         return JsonResponse(serializer.data, safe= False)
+    elif request.method == "POST":
+        json_parser = JSONParser()
+        data = json_parser.parse(request)
+        serializer = QuestionSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status= 400)
+
+@csrf_exempt
+def Poll_details(request, id):
+    try:
+        instance = Question.objects.get(id = id)
+    except Question.DoesNotExist as e:
+        return JsonResponse({"error" : "Given question object not found"}, status= 404)
+
+    if request.method == "GET":
+        serializer = QuestionSerializer(instance)
+        return JsonResponse(serializer.data)
+
+    elif request.method == "PUT":
+        json_parser = JSONParser()
+        data = json_parser.parse(request)
+        serializer = QuestionSerializer(instance, data = data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=200)
+        return JsonResponse(serializer.errors, status= 400)
+    elif request.method == "DELETE":
+        instance.delete()
+        return HttpResponse(status=204)
 
 @login_required(login_url= '/login/')
 def index(request):
