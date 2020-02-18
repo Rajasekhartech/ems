@@ -15,12 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path , include
-from employee.views import user_login, user_success, user_logout,home,ProfileUpdate,MyProfile
+from rest_framework.schemas import get_schema_view
+from employee.views import (user_login, user_success, user_logout,home,ProfileUpdate,MyProfile,LoginView,LogoutView )
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('poll/', include('poll.urls')),
     path('employee/',include('employee.urls')),
     path('api/v1/',include("poll.api_urls")),
+    path('api/v1/auth/',include('rest_framework.urls')),
+    # path('api/v1/', include('employee.api_urls')),
+     path('api/v1/auth/login/', LoginView.as_view()),
+     path('api/v1/auth/logout/', LogoutView.as_view()),
 
     path('login/', user_login, name = 'user_login'),
     path('success/', user_success, name = 'user_success'),

@@ -11,7 +11,41 @@ from poll.forms import PollForm, ChoiceForm
 from poll.serializers import QuestionSerializer
 
 from rest_framework.parsers import JSONParser
+from rest_framework import generics
+from rest_framework import mixins
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication, SessionAuthentication
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 # Create your views here.
+
+class PollListView(generics.GenericAPIView,mixins.ListModelMixin,
+                   mixins.CreateModelMixin,
+                   mixins.RetrieveModelMixin,
+                   mixins.UpdateModelMixin,
+                   mixins.DestroyModelMixin):
+    serializer_class = QuestionSerializer
+    queryset = Question.objects.all()
+    lookup_field = 'id'
+    authentication_classes = [TokenAuthentication,SessionAuthentication,BasicAuthentication]
+    permission_classes = [IsAuthenticated , IsAdminUser]
+
+    def get(self,request,id =None):
+        if id:
+            return self.retrieve(request,id)
+        else:
+            return self.list(request)
+    def post(self,request):
+        return self.create(request)
+    def perform_create(self, serializer):
+        serializer.save(created_by = self.request.user)
+
+    def put(self,request, id = None):
+        return self.update(request,id)
+
+    def perform_update(self, serializer):
+        serializer.save(created_by = self.request.user)
+
+    def delete(self,request,id = None):
+        return self.destroy(request , id)
 
 @csrf_exempt
 def Poll(request):
@@ -28,28 +62,28 @@ def Poll(request):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status= 400)
 
-@csrf_exempt
-def Poll_details(request, id):
-    try:
-        instance = Question.objects.get(id = id)
-    except Question.DoesNotExist as e:
-        return JsonResponse({"error" : "Given question object not found"}, status= 404)
-
-    if request.method == "GET":
-        serializer = QuestionSerializer(instance)
-        return JsonResponse(serializer.data)
-
-    elif request.method == "PUT":
-        json_parser = JSONParser()
-        data = json_parser.parse(request)
-        serializer = QuestionSerializer(instance, data = data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=200)
-        return JsonResponse(serializer.errors, status= 400)
-    elif request.method == "DELETE":
-        instance.delete()
-        return HttpResponse(status=204)
+# @csrf_exempt
+# def Poll_details(request, id):
+#     try:
+#         instance = Question.objects.get(id = id)
+#     except Question.DoesNotExist as e:
+#         return JsonResponse({"error" : "Given question object not found"}, status= 404)
+#
+#     if request.method == "GET":
+#         serializer = QuestionSerializer(instance)
+#         return JsonResponse(serializer.data)
+#
+#     elif request.method == "PUT":
+#         json_parser = JSONParser()
+#         data = json_parser.parse(request)
+#         serializer = QuestionSerializer(instance, data = data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return JsonResponse(serializer.data, status=200)
+#         return JsonResponse(serializer.errors, status= 400)
+#     elif request.method == "DELETE":
+#         instance.delete()
+#         return HttpResponse(status=204)
 
 @login_required(login_url= '/login/')
 def index(request):
